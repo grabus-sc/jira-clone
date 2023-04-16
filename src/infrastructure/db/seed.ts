@@ -22,6 +22,8 @@ const createUserIfNotExists = async (user: User): Promise<UserDB> => {
       id: user.id,
       name: user.name,
       image: user.image,
+      password: user.password || "123123",
+      email: user.email,
       color: user.color || getRandomPastelColor(),
     },
     update: {},

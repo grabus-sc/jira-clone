@@ -7,8 +7,8 @@ import { json, redirect } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { ProjectId, ProjectSummary } from "@domain/project";
 import { getProjectsSummary, deleteProject } from "@infrastructure/db/project";
-import { getUserSession } from "@app/session-storage";
 import { ProjectsView } from "@app/ui/main/projects";
+import { requireUserId } from "@app/utils/auth.server";
 
 export const meta: MetaFunction = () => {
   const title = "Jira clone - Projects";
@@ -47,12 +47,13 @@ type LoaderData = {
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
-  const userSession = await getUserSession(request);
+  const userSession = await requireUserId(request);
   const userId = userSession.getUser();
 
   if (!userId) {
-    return redirect("/login");
+    return redirect("/");
   }
+
 
   const projectsSummary = await getProjectsSummary(userId);
 
@@ -87,5 +88,6 @@ export function ErrorBoundary({ error }: { error: Error }) {
 
 export default function ProjectsRoute() {
   const { projectsSummary } = useLoaderData() as LoaderData;
+  
   return <ProjectsView projectsSummary={projectsSummary} />;
 }

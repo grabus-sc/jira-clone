@@ -2,6 +2,8 @@ export type UserId = string;
 export type User = {
   id: UserId;
   name: string;
+  password: string;
+  email: string;
   image?: string;
   color?: string;
 };
